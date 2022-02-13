@@ -39,7 +39,7 @@ fun App(stateMachine: StateMachine<State, Action>) {
                     modifier = Modifier.weight(1F),
                     value = inputPatternValue,
                     onValueChange = { inputPatternValue = it },
-                    placeholder = { Text(text = "Input pattern") },
+                    placeholder = { Text(text = "Input pattern (e.g. <\$KEY><\$VALUE>)") },
                     singleLine = true
                 )
 
@@ -49,7 +49,7 @@ fun App(stateMachine: StateMachine<State, Action>) {
                     modifier = Modifier.weight(1F),
                     value = outputPatternValue,
                     onValueChange = { outputPatternValue = it },
-                    placeholder = { Text(text = "Output pattern") },
+                    placeholder = { Text(text = "Output pattern (e.g. \$KEY: \$VALUE)") },
                     singleLine = true
                 )
             }

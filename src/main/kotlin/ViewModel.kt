@@ -1,8 +1,11 @@
+import androidx.compose.runtime.key
 import arch.StateMachine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.launchIn
+import model.Order
+import model.Pattern
 
 private const val keySymbol = "\$KEY"
 private const val valueSymbol = "\$VALUE"
@@ -41,16 +44,19 @@ class ViewModel(
             .map {
                 val keyValue = it.trim().getKeyAndValue(inputPatternParts)
 
-                outputPatternParts.first +
-                keyValue.first +
-                outputPatternParts.second +
-                keyValue.second +
-                outputPatternParts.third
+                when(outputPatternParts.order) {
+                    Order.KEY_FIRST -> {
+                        outputPatternParts.prefix + keyValue.first + outputPatternParts.infix + keyValue.second + outputPatternParts.suffix
+                    }
+                    Order.VALUE_FIRST -> {
+                        outputPatternParts.prefix + keyValue.second + outputPatternParts.infix + keyValue.first + outputPatternParts.suffix
+                    }
+                }
             }
             .reduce { acc, s -> acc + "\n" + s }
     }
 
-    private fun String.analyse(): Triple<String, String, String> {
+    private fun String.analyse(): Pattern {
         val keyIndex = indexOf(keySymbol, ignoreCase = true)
         val valueIndex = indexOf(valueSymbol, ignoreCase = true)
 
@@ -58,21 +64,34 @@ class ViewModel(
             throw java.lang.IllegalStateException("\$KEY symbol or \$VALUE symbol not found")
         }
 
-        if(keyIndex > valueIndex) {
-            throw java.lang.IllegalStateException("\$KEY symbol has to be before \$VALUE symbol")
+        return if(keyIndex < valueIndex) {
+            val prefix = substring(0, keyIndex)
+            val infix = substring(keyIndex + keySymbol.length, valueIndex)
+            val suffix = substring(valueIndex + valueSymbol.length, length)
+
+            Pattern(Order.KEY_FIRST, prefix, infix, suffix)
+        } else {
+            val prefix = substring(0, valueIndex)
+            val infix = substring(valueIndex + valueSymbol.length, keyIndex)
+            val suffix = substring(keyIndex + keySymbol.length, length)
+
+            Pattern(Order.VALUE_FIRST, prefix, infix, suffix)
         }
-
-        val prefix = substring(0, keyIndex)
-        val middle = substring(keyIndex + keySymbol.length, valueIndex)
-        val suffix = substring(valueIndex + valueSymbol.length, length)
-
-        return Triple(prefix, middle, suffix)
     }
 
-    private fun String.getKeyAndValue(pattern: Triple<String, String, String>): Pair<String, String> {
-        val key = substringAfter(pattern.first).substringBefore(pattern.second)
-        val value = substringAfter(pattern.second).substringBefore(pattern.third)
-        return Pair(key, value)
+    private fun String.getKeyAndValue(pattern: Pattern): Pair<String, String> {
+        return when(pattern.order) {
+            Order.KEY_FIRST -> {
+                val key = substringAfter(pattern.prefix).substringBefore(pattern.infix)
+                val value = substringAfter(pattern.infix).substringBefore(pattern.suffix)
+                Pair(key, value)
+            }
+            Order.VALUE_FIRST -> {
+                val value = substringAfter(pattern.prefix).substringBefore(pattern.infix)
+                val key = substringAfter(pattern.infix).substringBefore(pattern.suffix)
+                Pair(key, value)
+            }
+        }
     }
 }
 
