@@ -1,4 +1,8 @@
 
 sealed interface Action
 
-data class InputChanged(val text: String): Action
+data class ConvertClicked(
+    val text: String,
+    val inputPattern: String,
+    val outputPattern: String
+): Action
