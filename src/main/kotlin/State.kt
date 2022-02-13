@@ -1,9 +1,9 @@
 
-data class ViewModelState(
+data class State(
     val output: String
 ) {
     companion object {
-        val initial = ViewModelState(
+        val initial = State(
             output = ""
         )
     }
