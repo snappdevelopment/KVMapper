@@ -101,17 +101,12 @@ class ViewModel(
     }
 
     private fun String.getKeyAndValue(pattern: Pattern): Pair<String, String> {
+        val first = removePrefix(pattern.prefix).substringBefore(pattern.infix)
+        val second = removePrefix(pattern.prefix + first + pattern.infix).removeSuffix(pattern.suffix)
+
         return when(pattern.order) {
-            Order.KEY_FIRST -> {
-                val key = substringAfter(pattern.prefix).substringBefore(pattern.infix)
-                val value = substringAfter(pattern.infix).substringBefore(pattern.suffix)
-                Pair(key, value)
-            }
-            Order.VALUE_FIRST -> {
-                val value = substringAfter(pattern.prefix).substringBefore(pattern.infix)
-                val key = substringAfter(pattern.infix).substringBefore(pattern.suffix)
-                Pair(key, value)
-            }
+            Order.KEY_FIRST -> Pair(first, second)
+            Order.VALUE_FIRST -> Pair(second, first)
         }
     }
 }
