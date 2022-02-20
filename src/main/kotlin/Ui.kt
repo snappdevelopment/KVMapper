@@ -51,10 +51,12 @@ private fun Content(
         var inputPatternValue by remember { mutableStateOf(TextFieldValue()) }
         var outputPatternValue by remember { mutableStateOf(TextFieldValue()) }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
         ) {
             OutlinedTextField(
                 modifier = Modifier.weight(1F),
@@ -79,8 +81,8 @@ private fun Content(
 
         Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+                .weight(1F)
+                .padding(horizontal = 16.dp)
         ) {
 
             OutlinedTextField(
@@ -94,23 +96,6 @@ private fun Content(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Button(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                onClick = {
-                    sendAction(
-                        ConvertClicked(
-                            text = inputTextValue.text,
-                            inputPattern = inputPatternValue.text,
-                            outputPattern = outputPatternValue.text
-                        )
-                    )
-                },
-            ) {
-                Text(text = "Convert")
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxSize()
@@ -120,6 +105,25 @@ private fun Content(
                 readOnly = true,
                 placeholder = { Text(text = "Output") }
             )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(bottom = 16.dp, end = 16.dp),
+            onClick = {
+                sendAction(
+                    ConvertClicked(
+                        text = inputTextValue.text,
+                        inputPattern = inputPatternValue.text,
+                        outputPattern = outputPatternValue.text
+                    )
+                )
+            },
+        ) {
+            Text(text = "Convert")
         }
     }
 }
