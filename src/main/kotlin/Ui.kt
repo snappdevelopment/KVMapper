@@ -1,4 +1,6 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -24,82 +26,132 @@ fun App(stateMachine: StateMachine<State, Action>) {
     }
 
     MaterialTheme {
+        Box {
+            Content(state, stateMachine::sendAction)
 
-        Column(modifier = Modifier.fillMaxSize()) {
-            var inputTextValue by remember { mutableStateOf(TextFieldValue()) }
-            var inputPatternValue by remember { mutableStateOf(TextFieldValue()) }
-            var outputPatternValue by remember { mutableStateOf(TextFieldValue()) }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                OutlinedTextField(
-                    modifier = Modifier.weight(1F),
-                    value = inputPatternValue,
-                    onValueChange = { inputPatternValue = it },
-                    placeholder = { Text(text = "Input pattern (e.g. <\$KEY><\$VALUE>)") },
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                OutlinedTextField(
-                    modifier = Modifier.weight(1F),
-                    value = outputPatternValue,
-                    onValueChange = { outputPatternValue = it },
-                    placeholder = { Text(text = "Output pattern (e.g. \$KEY: \$VALUE)") },
-                    singleLine = true
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1F),
-                    value = inputTextValue,
-                    onValueChange = { inputTextValue = it },
-                    placeholder = { Text(text = "Input") }
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Button(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    onClick = {
-                        stateMachine.sendAction(
-                            ConvertClicked(
-                                text = inputTextValue.text,
-                                inputPattern = inputPatternValue.text,
-                                outputPattern = outputPatternValue.text
-                            )
-                        )
-                    },
-                ) {
-                    Text(text = "Convert")
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1F),
-                    value = state.output,
-                    onValueChange = {},
-                    readOnly = true,
-                    placeholder = { Text(text = "Output") }
+            if(state.error != null) {
+                Error(
+                    title = state.error!!.title,
+                    message = state.error!!.message,
+                    sendAction = stateMachine::sendAction
                 )
             }
         }
     }
+}
+
+@Composable
+private fun Content(
+    state: State,
+    sendAction: (Action) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        var inputTextValue by remember { mutableStateOf(TextFieldValue()) }
+        var inputPatternValue by remember { mutableStateOf(TextFieldValue()) }
+        var outputPatternValue by remember { mutableStateOf(TextFieldValue()) }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            OutlinedTextField(
+                modifier = Modifier.weight(1F),
+                value = inputPatternValue,
+                onValueChange = { inputPatternValue = it },
+                placeholder = { Text(text = "Input pattern (e.g. <\$KEY><\$VALUE>)") },
+                singleLine = true
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            OutlinedTextField(
+                modifier = Modifier.weight(1F),
+                value = outputPatternValue,
+                onValueChange = { outputPatternValue = it },
+                placeholder = { Text(text = "Output pattern (e.g. \$KEY: \$VALUE)") },
+                singleLine = true
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1F),
+                value = inputTextValue,
+                onValueChange = { inputTextValue = it },
+                placeholder = { Text(text = "Input") }
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Button(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                onClick = {
+                    sendAction(
+                        ConvertClicked(
+                            text = inputTextValue.text,
+                            inputPattern = inputPatternValue.text,
+                            outputPattern = outputPatternValue.text
+                        )
+                    )
+                },
+            ) {
+                Text(text = "Convert")
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1F),
+                value = state.output,
+                onValueChange = {},
+                readOnly = true,
+                placeholder = { Text(text = "Output") }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun Error(
+    title: String,
+    message: String,
+    sendAction: (Action) -> Unit
+) {
+    AlertDialog(
+        modifier = Modifier
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null,
+                onClick = {}
+            )
+            .size(width = 300.dp, height = 200.dp),
+        title = {
+           Text(text = title)
+        },
+        text = {
+            Text(text = message)
+        },
+        confirmButton = {
+            Button(
+                modifier = Modifier.padding(16.dp),
+                onClick = { sendAction(ErrorDismissed) },
+                content = { Text(text = "OK") }
+            )
+        },
+        onDismissRequest = { sendAction(ErrorDismissed) }
+    )
 }

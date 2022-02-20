@@ -1,4 +1,3 @@
-import androidx.compose.runtime.key
 import arch.StateMachine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
@@ -6,6 +5,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.launchIn
 import model.Order
 import model.Pattern
+import kotlin.math.absoluteValue
 
 private const val keySymbol = "\$KEY"
 private const val valueSymbol = "\$VALUE"
@@ -25,8 +25,25 @@ class ViewModel(
         return when(action) {
             is ConvertClicked -> {
                 val output = convertInput(action.text, action.inputPattern, action.outputPattern)
-                state.copy(output = output)
+                if(output == null) {
+                    state.copy(
+                        error = Error(
+                            title = "Parsing error",
+                            message = "\$KEY or \$VALUE couldn't be found or are not separated by any symbol."
+                        )
+                    )
+                } else if(output.isBlank()) {
+                    state.copy(
+                        error = Error(
+                            title = "Parsing error",
+                            message = "Input doesn't match input pattern."
+                        )
+                    )
+                } else {
+                    state.copy(output = output)
+                }
             }
+            is ErrorDismissed -> state.copy(error = null)
         }
     }
 
@@ -34,9 +51,13 @@ class ViewModel(
         input: String,
         inputPattern: String,
         outputPattern: String
-    ): String {
+    ): String? {
         val inputPatternParts = inputPattern.analyse()
         val outputPatternParts = outputPattern.analyse()
+
+        if(inputPatternParts == null || outputPatternParts == null) {
+            return null
+        }
 
         return input
             .trim()
@@ -56,12 +77,12 @@ class ViewModel(
             .reduce { acc, s -> acc + "\n" + s }
     }
 
-    private fun String.analyse(): Pattern {
+    private fun String.analyse(): Pattern? {
         val keyIndex = indexOf(keySymbol, ignoreCase = true)
         val valueIndex = indexOf(valueSymbol, ignoreCase = true)
 
         if(keyIndex == - 1 || valueIndex == -1) {
-            throw java.lang.IllegalStateException("\$KEY symbol or \$VALUE symbol not found")
+            return null
         }
 
         return if(keyIndex < valueIndex) {
@@ -69,13 +90,13 @@ class ViewModel(
             val infix = substring(keyIndex + keySymbol.length, valueIndex)
             val suffix = substring(valueIndex + valueSymbol.length, length)
 
-            Pattern(Order.KEY_FIRST, prefix, infix, suffix)
+            if(infix.isNotEmpty()) Pattern(Order.KEY_FIRST, prefix, infix, suffix) else null
         } else {
             val prefix = substring(0, valueIndex)
             val infix = substring(valueIndex + valueSymbol.length, keyIndex)
             val suffix = substring(keyIndex + keySymbol.length, length)
 
-            Pattern(Order.VALUE_FIRST, prefix, infix, suffix)
+            if(infix.isNotEmpty()) Pattern(Order.VALUE_FIRST, prefix, infix, suffix) else null
         }
     }
 

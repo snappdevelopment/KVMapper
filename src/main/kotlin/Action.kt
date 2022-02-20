@@ -6,3 +6,5 @@ data class ConvertClicked(
     val inputPattern: String,
     val outputPattern: String
 ): Action
+
+object ErrorDismissed: Action

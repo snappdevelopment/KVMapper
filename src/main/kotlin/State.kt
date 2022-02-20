@@ -1,10 +1,17 @@
 
 data class State(
-    val output: String
+    val output: String,
+    val error: Error?
 ) {
     companion object {
         val initial = State(
-            output = ""
+            output = "",
+            error = null
         )
     }
 }
+
+data class Error(
+    val title: String,
+    val message: String
+)
