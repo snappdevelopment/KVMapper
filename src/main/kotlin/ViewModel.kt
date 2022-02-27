@@ -22,27 +22,31 @@ class ViewModel(
 
     private fun reduce(action: Action, state: State): State {
         return when(action) {
-            is ConvertClicked -> {
-                val output = convertInput(action.text, action.inputPattern, action.outputPattern)
-                if(output == null) {
-                    state.copy(
-                        error = Error(
-                            title = "Parsing error",
-                            message = "\$KEY or \$VALUE couldn't be found or are not separated by any symbol."
-                        )
-                    )
-                } else if(output.isBlank()) {
-                    state.copy(
-                        error = Error(
-                            title = "Parsing error",
-                            message = "Input doesn't match input pattern."
-                        )
-                    )
-                } else {
-                    state.copy(output = output)
-                }
-            }
+            is ConvertClicked -> convert(state, action)
             is ErrorDismissed -> state.copy(error = null)
+        }
+    }
+
+    private fun convert(
+        state: State,
+        action: ConvertClicked
+    ): State {
+        val output = convertInput(action.text, action.inputPattern, action.outputPattern)
+        val errorMessage = when {
+            output == null -> "\$KEY or \$VALUE couldn't be found or are not separated by any symbol."
+            output.isBlank() -> "Input doesn't match input pattern."
+            else -> null
+        }
+
+        return if(errorMessage != null) {
+            state.copy(
+                error = Error(
+                    title = "Parsing error",
+                    message = errorMessage
+                )
+            )
+        } else {
+            state.copy(output = output!!)
         }
     }
 
