@@ -12,7 +12,8 @@ fun main() {
 
     val job = Job()
     val coroutineScope = CoroutineScope(job)
-    val viewModel = ViewModel(coroutineScope)
+    val kvMapper: KvMapper = KvMapperImpl()
+    val kvMapperStateMachine = KvMapperStateMachine(coroutineScope, kvMapper)
 
     application {
         Window(
@@ -25,12 +26,12 @@ fun main() {
             var state by remember { mutableStateOf(State.initial) }
 
             LaunchedEffect(Unit) {
-                viewModel.state.collect {
+                kvMapperStateMachine.state.collect {
                     state = it
                 }
             }
 
-            App(state, viewModel::sendAction)
+            App(state, kvMapperStateMachine::sendAction)
         }
     }
 }

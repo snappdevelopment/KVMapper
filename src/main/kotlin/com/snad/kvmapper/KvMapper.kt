@@ -1,58 +1,22 @@
 package com.snad.kvmapper
 
-import com.snad.kvmapper.arch.StateMachine
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.launchIn
 import com.snad.kvmapper.model.Order
 import com.snad.kvmapper.model.Pattern
 
-private const val keySymbol = "\$KEY"
-private const val valueSymbol = "\$VALUE"
+interface KvMapper {
+    fun convertInput(
+        input: String,
+        inputPattern: String,
+        outputPattern: String
+    ): String?
+}
 
-class ViewModel(
-    coroutineScope: CoroutineScope
-): StateMachine<State, Action>(initialState = State.initial) {
+class KvMapperImpl: KvMapper {
 
-    init {
-        actions
-            .map { reduce(it, state.value) }
-            .onEach { updateState(it) }
-            .launchIn(coroutineScope)
-    }
+    private val keySymbol = "\$KEY"
+    private val valueSymbol = "\$VALUE"
 
-    private fun reduce(action: Action, state: State): State {
-        return when(action) {
-            is ConvertClicked -> convert(state, action)
-            is ErrorDismissed -> state.copy(error = null)
-        }
-    }
-
-    private fun convert(
-        state: State,
-        action: ConvertClicked
-    ): State {
-        val output = convertInput(action.text, action.inputPattern, action.outputPattern)
-        val errorMessage = when {
-            output == null -> "\$KEY or \$VALUE couldn't be found or are not separated by any symbol."
-            output.isBlank() -> "Input doesn't match input pattern."
-            else -> null
-        }
-
-        return if(errorMessage != null) {
-            state.copy(
-                error = Error(
-                    title = "Parsing error",
-                    message = errorMessage
-                )
-            )
-        } else {
-            state.copy(output = output!!)
-        }
-    }
-
-    private fun convertInput(
+    override fun convertInput(
         input: String,
         inputPattern: String,
         outputPattern: String
@@ -115,4 +79,3 @@ class ViewModel(
         }
     }
 }
-
