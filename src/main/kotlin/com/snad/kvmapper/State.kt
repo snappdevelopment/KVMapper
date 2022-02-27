@@ -1,3 +1,4 @@
+package com.snad.kvmapper
 
 data class State(
     val output: String,

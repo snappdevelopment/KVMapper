@@ -1,10 +1,12 @@
-import arch.StateMachine
+package com.snad.kvmapper
+
+import com.snad.kvmapper.arch.StateMachine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.launchIn
-import model.Order
-import model.Pattern
+import com.snad.kvmapper.model.Order
+import com.snad.kvmapper.model.Pattern
 
 private const val keySymbol = "\$KEY"
 private const val valueSymbol = "\$VALUE"

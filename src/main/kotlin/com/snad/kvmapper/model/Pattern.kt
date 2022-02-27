@@ -1,4 +1,4 @@
-package model
+package com.snad.kvmapper.model
 
 data class Pattern(
     val order: Order,

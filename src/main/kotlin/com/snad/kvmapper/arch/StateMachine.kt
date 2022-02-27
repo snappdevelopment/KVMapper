@@ -1,4 +1,4 @@
-package arch
+package com.snad.kvmapper.arch
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

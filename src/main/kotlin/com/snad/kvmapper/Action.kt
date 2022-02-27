@@ -1,3 +1,4 @@
+package com.snad.kvmapper
 
 sealed interface Action
 
