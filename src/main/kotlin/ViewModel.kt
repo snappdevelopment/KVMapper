@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.launchIn
 import model.Order
 import model.Pattern
-import kotlin.math.absoluteValue
 
 private const val keySymbol = "\$KEY"
 private const val valueSymbol = "\$VALUE"

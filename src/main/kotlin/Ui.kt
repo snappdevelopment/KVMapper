@@ -15,33 +15,25 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import arch.StateMachine
-import kotlinx.coroutines.flow.collect
 
 private val activeColor = Color(0xFF007AFF)
 private val inactiveColor = Color(0xFF8E8E93)
 
 @Composable
 @Preview
-fun App(stateMachine: StateMachine<State, Action>) {
-
-    var state by remember { mutableStateOf(State.initial) }
-
-    LaunchedEffect(Unit) {
-        stateMachine.state.collect {
-            state = it
-        }
-    }
-
+fun App(
+    state: State,
+    sendAction: (Action) -> Unit
+) {
     MaterialTheme {
         Box {
-            Content(state, stateMachine::sendAction)
+            Content(state, sendAction)
 
             if(state.error != null) {
                 Error(
-                    title = state.error!!.title,
-                    message = state.error!!.message,
-                    sendAction = stateMachine::sendAction
+                    title = state.error.title,
+                    message = state.error.message,
+                    sendAction = sendAction
                 )
             }
         }
@@ -118,31 +110,21 @@ private fun Content(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Surface(
+        MacButton(
             modifier = Modifier
                 .align(Alignment.End)
-                .padding(bottom = 16.dp, end = 16.dp)
-                .clickable {
-                    sendAction(
-                        ConvertClicked(
-                            text = inputTextValue.text,
-                            inputPattern = inputPatternValue.text,
-                            outputPattern = outputPatternValue.text
-                        )
+                .padding(bottom = 16.dp, end = 16.dp),
+            text = "Convert",
+            onClick = {
+                sendAction(
+                    ConvertClicked(
+                        text = inputTextValue.text,
+                        inputPattern = inputPatternValue.text,
+                        outputPattern = outputPatternValue.text
                     )
-                }
-        ) {
-            Text(
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 157.dp, minHeight = 28.dp)
-                    .background(color = activeColor, shape = RoundedCornerShape(4.dp))
-                    .padding(vertical = 6.dp, horizontal = 10.dp),
-                text = "Convert",
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center,
-                color = Color.White,
-            )
-        }
+                )
+            }
+        )
     }
 }
 
@@ -168,10 +150,10 @@ private fun Error(
             Text(text = message)
         },
         confirmButton = {
-            Button(
+            MacButton(
                 modifier = Modifier.padding(16.dp),
+                text = "OK",
                 onClick = { sendAction(ErrorDismissed) },
-                content = { Text(text = "OK") }
             )
         },
         onDismissRequest = { sendAction(ErrorDismissed) }
@@ -204,4 +186,26 @@ private fun MacTextField(
             focusedLabelColor = inactiveColor
         )
     )
+}
+
+@Composable
+private fun MacButton(
+    modifier: Modifier,
+    text: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = modifier.clickable { onClick() }
+    ) {
+        Text(
+            modifier = Modifier
+                .defaultMinSize(minWidth = 157.dp, minHeight = 28.dp)
+                .background(color = activeColor, shape = RoundedCornerShape(4.dp))
+                .padding(vertical = 6.dp, horizontal = 10.dp),
+            text = text,
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center,
+            color = Color.White,
+        )
+    }
 }
