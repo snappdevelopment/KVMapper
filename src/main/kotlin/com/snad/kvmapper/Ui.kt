@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,8 +51,14 @@ private fun Content(
     Column(modifier = Modifier.fillMaxSize()) {
 
         var inputTextValue by remember { mutableStateOf(TextFieldValue()) }
+        var outputTextValue by remember { mutableStateOf(TextFieldValue()) }
         var inputPatternValue by remember { mutableStateOf(TextFieldValue()) }
         var outputPatternValue by remember { mutableStateOf(TextFieldValue()) }
+
+        //Set output once and then only if it changed. Allows text to be selectable to copy it.
+        LaunchedEffect(state.output) {
+            outputTextValue = TextFieldValue(state.output)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -104,8 +111,8 @@ private fun Content(
                     .fillMaxSize()
                     .weight(1F),
                 placeholder = "Output",
-                value = TextFieldValue(text = state.output),
-                onValueChanged = {},
+                value = outputTextValue,
+                onValueChanged = { outputTextValue = it },
                 singleLine = false
             )
         }
