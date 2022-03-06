@@ -21,8 +21,8 @@ class KvMapperImpl: KvMapper {
         inputPattern: String,
         outputPattern: String
     ): String? {
-        val inputPatternParts = inputPattern.analyse()
-        val outputPatternParts = outputPattern.analyse()
+        val inputPatternParts = inputPattern.trim().analyse()
+        val outputPatternParts = outputPattern.trim().analyse()
 
         if(inputPatternParts == null || outputPatternParts == null) {
             return null
