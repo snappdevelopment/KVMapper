@@ -19,6 +19,8 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation(compose.desktop.currentOs)
+
+    testImplementation("app.cash.turbine:turbine:0.7.0")
 }
 
 tasks.test {

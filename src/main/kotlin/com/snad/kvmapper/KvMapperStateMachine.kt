@@ -30,19 +30,14 @@ class KvMapperStateMachine(
         action: ConvertClicked
     ): State {
         val output = kvMapper.convertInput(action.text, action.inputPattern, action.outputPattern)
-        val errorMessage = when {
-            output == null -> "\$KEY or \$VALUE couldn't be found or are not separated by any symbol."
-            output.isBlank() -> "Input doesn't match input pattern."
+        val error = when {
+            output == null -> Error.ParsingError()
+            output.isBlank() -> Error.InputError()
             else -> null
         }
 
-        return if(errorMessage != null) {
-            state.copy(
-                error = Error(
-                    title = "Parsing error",
-                    message = errorMessage
-                )
-            )
+        return if(error != null) {
+            state.copy(error = error)
         } else {
             state.copy(output = output!!)
         }
