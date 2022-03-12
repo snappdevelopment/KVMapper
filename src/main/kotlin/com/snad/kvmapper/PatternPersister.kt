@@ -13,18 +13,21 @@ class PatternPersisterImpl(
 ): PatternPersister {
 
     override fun getPattern(): List<String> {
-        return file.readLines()
+        return file
+            .readLines()
+            .filter { it.isNotEmpty() }
     }
 
     override fun savePattern(pattern: String) {
-        file.appendText("\n$pattern")
+        file.appendText("$pattern\n")
     }
 
     override fun deletePattern(pattern: String) {
         val filteredLines = file
             .readLines()
             .filter { it != pattern }
-            .reduce { acc, s -> acc + "\n" + s }
+            .reduceOrNull { acc, s -> acc + "\n" + s }
+            ?: ""
         file.writeText(filteredLines)
     }
 }

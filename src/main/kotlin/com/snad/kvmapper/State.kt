@@ -2,11 +2,13 @@ package com.snad.kvmapper
 
 data class State(
     val output: String,
+    val savedPattern: List<String>,
     val error: Error?
 ) {
     companion object {
         val initial = State(
             output = "",
+            savedPattern = emptyList(),
             error = null
         )
     }

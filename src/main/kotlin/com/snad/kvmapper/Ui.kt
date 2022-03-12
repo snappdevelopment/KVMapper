@@ -13,11 +13,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.loadXmlImageVector
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.xml.sax.InputSource
 
 private val activeColor = Color(0xFF007AFF)
 private val inactiveColor = Color(0xFF8E8E93)
@@ -29,7 +31,7 @@ fun App(
     sendAction: (Action) -> Unit
 ) {
     MaterialTheme {
-        Box {
+        Box(modifier = Modifier.background(color = Color.White)) {
             Content(state, sendAction)
 
             if(state.error != null) {
@@ -72,7 +74,15 @@ private fun Content(
                 placeholder = "Input pattern (e.g. <\$KEY><\$VALUE>)",
                 value = inputPatternValue,
                 onValueChanged = { inputPatternValue = it },
-                singleLine = true
+                singleLine = true,
+                trailingIcon = {
+                    PatternButton(
+                        currentPattern = inputPatternValue.text,
+                        savedPattern = state.savedPattern,
+                        sendAction = sendAction,
+                        onPatternClicked = { inputPatternValue = TextFieldValue(it) }
+                    )
+                }
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -82,7 +92,15 @@ private fun Content(
                 placeholder = "Output pattern (e.g. \$KEY: \$VALUE)",
                 value = outputPatternValue,
                 onValueChanged = { outputPatternValue = it },
-                singleLine = true
+                singleLine = true,
+                trailingIcon = {
+                    PatternButton(
+                        currentPattern = outputPatternValue.text,
+                        savedPattern = state.savedPattern,
+                        sendAction = sendAction,
+                        onPatternClicked = { outputPatternValue = TextFieldValue(it) }
+                    )
+                }
             )
         }
 
@@ -170,12 +188,83 @@ private fun Error(
 }
 
 @Composable
+private fun PatternButton(
+    currentPattern: String,
+    savedPattern: List<String>,
+    sendAction: (Action) -> Unit,
+    onPatternClicked: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .clickable { expanded = !expanded }
+            .padding(4.dp)
+    ) {
+        Icon(
+            imageVector = loadXmlImageVector(InputSource("icons/icon_settings_and.xml"), LocalDensity.current),
+            contentDescription = null,
+            tint = inactiveColor
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+
+        ) {
+            DropdownMenuItem(
+                onClick = { sendAction(SaveCurrentPatternClicked(currentPattern)) },
+            ) {
+                Text(
+                    text = "Save current pattern",
+                    fontSize = 12.sp
+                )
+            }
+
+            if(savedPattern.isNotEmpty()) {
+                Divider(color = inactiveColor)
+            }
+
+            savedPattern.forEachIndexed { index, pattern ->
+                DropdownMenuItem(
+                    onClick = { onPatternClicked(savedPattern[index]) }
+                ) {
+                    Row {
+                        Text(
+                            modifier = Modifier
+                                .weight(1F)
+                                .align(Alignment.CenterVertically),
+                            text = pattern,
+                            fontSize = 12.sp
+                        )
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Icon(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .align(Alignment.CenterVertically)
+                                .clickable { sendAction(DeletePatternClicked(savedPattern[index])) }
+                                .padding(4.dp),
+                            imageVector = loadXmlImageVector(InputSource("icons/icon_settings_and.xml"), LocalDensity.current),
+                            contentDescription = null,
+                            tint = inactiveColor
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun MacTextField(
     modifier: Modifier,
     placeholder: String,
     value: TextFieldValue,
     onValueChanged: (TextFieldValue) -> Unit,
-    singleLine: Boolean
+    singleLine: Boolean,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -193,7 +282,8 @@ private fun MacTextField(
             unfocusedBorderColor = inactiveColor,
             unfocusedLabelColor = inactiveColor,
             focusedLabelColor = inactiveColor
-        )
+        ),
+        trailingIcon = trailingIcon
     )
 }
 

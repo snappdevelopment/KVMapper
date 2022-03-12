@@ -17,12 +17,25 @@ class KvMapperStateMachine(
             .map { reduce(it, state.value) }
             .onEach { updateState(it) }
             .launchIn(coroutineScope)
+
+        sendAction(InitSavedPattern)
     }
 
     private fun reduce(action: Action, state: State): State {
         return when(action) {
             is ConvertClicked -> convert(state, action)
             is ErrorDismissed -> state.copy(error = null)
+            is InitSavedPattern -> {
+                state.copy(savedPattern = patternPersister.getPattern())
+            }
+            is SaveCurrentPatternClicked -> {
+                if(action.pattern.isNotEmpty()) patternPersister.savePattern(action.pattern)
+                state.copy(savedPattern = patternPersister.getPattern())
+            }
+            is DeletePatternClicked -> {
+                patternPersister.deletePattern(action.pattern)
+                state.copy(savedPattern = patternPersister.getPattern())
+            }
         }
     }
 
