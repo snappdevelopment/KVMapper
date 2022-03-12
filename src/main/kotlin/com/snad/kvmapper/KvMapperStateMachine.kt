@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.launchIn
 
 class KvMapperStateMachine(
     coroutineScope: CoroutineScope,
-    private val kvMapper: KvMapper
+    private val kvMapper: KvMapper,
+    private val patternPersister: PatternPersister
 ): StateMachine<State, Action>(initialState = State.initial) {
 
     init {

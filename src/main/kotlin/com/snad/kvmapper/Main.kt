@@ -7,13 +7,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
+import java.io.File
+
+private const val RESOURCE_DIR = "compose.application.resources.dir"
+private const val PATTERN_FILE = "pattern.txt"
 
 fun main() {
 
     val job = Job()
     val coroutineScope = CoroutineScope(job)
+
+    val patternFile = File(System.getProperty(RESOURCE_DIR)).resolve(PATTERN_FILE)
+    val patternPersister: PatternPersister = PatternPersisterImpl(patternFile)
     val kvMapper: KvMapper = KvMapperImpl()
-    val kvMapperStateMachine = KvMapperStateMachine(coroutineScope, kvMapper)
+    val kvMapperStateMachine = KvMapperStateMachine(coroutineScope, kvMapper, patternPersister)
 
     application {
         Window(

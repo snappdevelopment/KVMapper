@@ -36,6 +36,7 @@ compose.desktop {
         mainClass = "com.snad.kvmapper.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
             packageName = "KVMapper"
             packageVersion = "1.0.0"
             description = "Key Value Mapper"
