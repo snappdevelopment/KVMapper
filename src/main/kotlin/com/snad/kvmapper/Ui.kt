@@ -214,48 +214,63 @@ private fun PatternButton(
             onDismissRequest = { expanded = false },
 
         ) {
-            DropdownMenuItem(
-                onClick = { sendAction(SaveCurrentPatternClicked(currentPattern)) },
-            ) {
-                Text(
-                    text = "Save current pattern",
-                    fontSize = 12.sp
-                )
-            }
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { sendAction(SaveCurrentPatternClicked(currentPattern)) }
+                    .padding(8.dp),
+                text = "Save current pattern",
+                fontSize = 12.sp
+            )
 
             if(savedPattern.isNotEmpty()) {
                 Divider(color = inactiveColor)
             }
 
             savedPattern.forEachIndexed { index, pattern ->
-                DropdownMenuItem(
-                    onClick = { onPatternClicked(savedPattern[index]) }
-                ) {
-                    Row {
-                        Text(
-                            modifier = Modifier
-                                .weight(1F)
-                                .align(Alignment.CenterVertically),
-                            text = pattern,
-                            fontSize = 12.sp
-                        )
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Icon(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .align(Alignment.CenterVertically)
-                                .clickable { sendAction(DeletePatternClicked(savedPattern[index])) }
-                                .padding(4.dp),
-                            painter = painterResource("icon_settings.xml"),
-                            contentDescription = null,
-                            tint = inactiveColor
-                        )
-                    }
-                }
+                DropdownItem(
+                    text = pattern,
+                    onClick = { onPatternClicked(savedPattern[index]) },
+                    onDeleteClick = { sendAction(DeletePatternClicked(savedPattern[index])) }
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun DropdownItem(
+    text: String,
+    onClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .widthIn(max = 400.dp)
+            .clickable { onClick() }
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            modifier = Modifier
+                .weight(1F)
+                .align(Alignment.CenterVertically),
+            text = text,
+            fontSize = 12.sp
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Icon(
+            modifier = Modifier
+                .size(24.dp)
+                .align(Alignment.CenterVertically)
+                .clickable { onDeleteClick() }
+                .padding(4.dp),
+            painter = painterResource("icon_delete.xml"),
+            contentDescription = null,
+            tint = inactiveColor
+        )
     }
 }
 

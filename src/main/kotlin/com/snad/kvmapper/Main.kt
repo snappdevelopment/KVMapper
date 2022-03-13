@@ -3,6 +3,7 @@ package com.snad.kvmapper
 import androidx.compose.runtime.*
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -11,14 +12,13 @@ import java.io.File
 
 private const val RESOURCE_DIR = "compose.application.resources.dir"
 private const val PATTERN_FILE = "pattern.txt"
-val resourcesDir = File(System.getProperty(RESOURCE_DIR))
 
 fun main() {
 
     val job = Job()
     val coroutineScope = CoroutineScope(job)
 
-    val patternFile = resourcesDir.resolve(PATTERN_FILE)
+    val patternFile = File(System.getProperty(RESOURCE_DIR)).resolve(PATTERN_FILE)
     val patternPersister: PatternPersister = PatternPersisterImpl(patternFile)
     val kvMapper: KvMapper = KvMapperImpl()
     val kvMapperStateMachine = KvMapperStateMachine(coroutineScope, kvMapper, patternPersister)
