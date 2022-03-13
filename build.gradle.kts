@@ -43,7 +43,7 @@ compose.desktop {
             copyright = "© 2022 SNAD. All rights reserved."
 
             macOS {
-                iconFile.set(project.file("icons/icon.icns"))
+                iconFile.set(project.file("icon.icns"))
             }
         }
     }

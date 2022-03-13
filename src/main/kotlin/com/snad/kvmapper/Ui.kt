@@ -13,13 +13,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.loadXmlImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.xml.sax.InputSource
 
 private val activeColor = Color(0xFF007AFF)
 private val inactiveColor = Color(0xFF8E8E93)
@@ -41,6 +39,10 @@ fun App(
                     sendAction = sendAction
                 )
             }
+        }
+
+        LaunchedEffect(Unit) {
+            sendAction(LoadSavedPattern)
         }
     }
 }
@@ -202,7 +204,7 @@ private fun PatternButton(
             .padding(4.dp)
     ) {
         Icon(
-            imageVector = loadXmlImageVector(InputSource("icons/icon_settings_and.xml"), LocalDensity.current),
+            painter = painterResource("icon_settings.xml"),
             contentDescription = null,
             tint = inactiveColor
         )
@@ -246,7 +248,7 @@ private fun PatternButton(
                                 .align(Alignment.CenterVertically)
                                 .clickable { sendAction(DeletePatternClicked(savedPattern[index])) }
                                 .padding(4.dp),
-                            imageVector = loadXmlImageVector(InputSource("icons/icon_settings_and.xml"), LocalDensity.current),
+                            painter = painterResource("icon_settings.xml"),
                             contentDescription = null,
                             tint = inactiveColor
                         )

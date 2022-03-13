@@ -2,7 +2,7 @@ package com.snad.kvmapper
 
 sealed interface Action
 
-object InitSavedPattern: Action
+object LoadSavedPattern: Action
 
 data class ConvertClicked(
     val text: String,
