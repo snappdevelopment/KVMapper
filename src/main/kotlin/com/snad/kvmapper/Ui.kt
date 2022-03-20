@@ -198,7 +198,7 @@ private fun PatternButton(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Row(
+    Box(
         modifier = Modifier
             .clickable { expanded = !expanded }
             .padding(4.dp)
@@ -212,7 +212,6 @@ private fun PatternButton(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-
         ) {
             Text(
                 modifier = Modifier
