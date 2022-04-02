@@ -27,6 +27,11 @@ A list of key-value pairs can be pasted into the input field and then converted 
 - macOS 10.10+: [KVMapper.app](https://github.com/snappdevelopment/KVMapper/releases/download/1.0/KVMapper.app.zip)
 - Source: [Release 1.0](https://github.com/snappdevelopment/KVMapper/archive/1.0.zip)
 
+> Since this is a hobby project, the macOS app is not signed with a developer ID from Apple. When opening the app, there might pop up a window saying the app is damaged and can't be opened. If you encounter this issue, then you can manually grant executable rights with the following terminal command and try again:
+```
+sudo chmod +x /path/to/app/KVMapper.app/Contents/MacOS/KVMapper
+```
+
 ## Usage
 
 - Type the pattern for your input in the input pattern field by using `$KEY` and `$VALUE` to mark the position of key and value (e.g. `<$KEY><$VALUE>`)
