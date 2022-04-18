@@ -1,6 +1,6 @@
 # <img src="screenshots/KVMapperIcon.png" height="25"> KVMapper 
 
-![](https://img.shields.io/badge/Platform-macOS-blue) ![](https://img.shields.io/badge/Kotlin-1.5.31-orange) ![](https://img.shields.io/badge/UI-Compose_Desktop-orange) ![](https://img.shields.io/badge/Version-1.0-brightgreen) ![](https://img.shields.io/badge/License-GNU_v3.0-blue)
+![](https://img.shields.io/badge/Platform-macOS-blue) ![](https://img.shields.io/badge/Kotlin-1.5.31-orange) ![](https://img.shields.io/badge/UI-Compose_Desktop-orange) ![](https://img.shields.io/badge/Kotlin_Weekly-Issue_298-brightgreen)
 <br /><br />
 KVMapper is an application to convert key-value pairs from one format to another.
 <br /><br />
