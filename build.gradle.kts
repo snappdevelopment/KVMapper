@@ -40,7 +40,7 @@ compose.desktop {
             packageName = "KVMapper"
             packageVersion = "1.0.0"
             description = "Key Value Mapper"
-            copyright = "© 2022 SNAD. All rights reserved."
+            copyright = "2022 SNAD. All rights reserved."
 
             macOS {
                 iconFile.set(project.file("icon.icns"))
