@@ -66,7 +66,7 @@ button_convert: Convert
 - Open the Gradle tab on the right and run the task `Tasks -> compose desktop -> run` to build and launch the app
 - Open the Gradle tab on the right and run the task `Tasks -> compose desktop -> createDistributable` to build and package the app into an executable app. (e.g. macOS app)
 
-> Distributable is built to: `build/compose/binaries/main/app`
+> Distributable is built to: `build/compose/binaries/main/app`  
 > Building requires JDK 16: `Preferences -> Gradle -> Gradle JDK`
 
 ## License
