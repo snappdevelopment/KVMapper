@@ -32,7 +32,7 @@ A list of key-value pairs can be pasted into the input field and then converted 
 
 Disable quarantine mode for this app:
 ```
-sudo xattr -cr /path/to/app/KVMapper.app
+sudo xattr -d com.apple.quarantine /path/to/app/KVMapper.app
 ```
 Grant executable rights, if the first command didn't work:
 ```
