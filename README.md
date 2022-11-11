@@ -22,11 +22,11 @@ A list of key-value pairs can be pasted into the input field and then converted 
 
 ## Download
 
-##### Version 1.0
+##### Version 1.1
 
-- macOS 10.10+ (Silicon): [KVMapper.app](https://github.com/snappdevelopment/KVMapper/releases/download/1.0/KVMapper.Silicon.app.zip)
-- macOS 10.10+ (Intel): [KVMapper.app](https://github.com/snappdevelopment/KVMapper/releases/download/1.0/KVMapper.app.zip)
-- Source: [Release 1.0](https://github.com/snappdevelopment/KVMapper/archive/1.0.zip)
+- macOS 10.10+ (Silicon): [KVMapper.app](https://github.com/snappdevelopment/KVMapper/releases/download/1.1/KVMapper.Silicon.app.zip)
+- macOS 10.10+ (Intel): [KVMapper.app](https://github.com/snappdevelopment/KVMapper/releases/download/1.1/KVMapper.app.zip)
+- Source: [Release 1.1](https://github.com/snappdevelopment/KVMapper/archive/refs/tags/1.1.zip)
 
 > Since this is a hobby project, the macOS app is not signed with a developer ID from Apple. When opening the app, there might pop up a window saying the app is damaged and can't be opened. If you encounter this issue, then you can try to take the app out of quarantine mode or manually grant executable rights with the following terminal commands. Then try again:
 
