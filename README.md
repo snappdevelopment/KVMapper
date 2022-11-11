@@ -1,6 +1,6 @@
 # <img src="screenshots/KVMapperIcon.png" height="25"> KVMapper 
 
-![](https://img.shields.io/badge/Platform-macOS-blue) ![](https://img.shields.io/badge/Kotlin-1.5.31-orange) ![](https://img.shields.io/badge/UI-Compose_Desktop-orange) ![](https://img.shields.io/badge/Kotlin_Weekly-Issue_298-brightgreen)
+![](https://img.shields.io/badge/Platform-macOS-blue) ![](https://img.shields.io/badge/Kotlin-1.7.20-orange) ![](https://img.shields.io/badge/UI-Compose_Desktop-orange) ![](https://img.shields.io/badge/Kotlin_Weekly-Issue_298-brightgreen)
 <br /><br />
 KVMapper is an application to convert key-value pairs from one format to another.
 <br /><br />
@@ -28,10 +28,17 @@ A list of key-value pairs can be pasted into the input field and then converted 
 - macOS 10.10+ (Intel): [KVMapper.app](https://github.com/snappdevelopment/KVMapper/releases/download/1.0/KVMapper.app.zip)
 - Source: [Release 1.0](https://github.com/snappdevelopment/KVMapper/archive/1.0.zip)
 
-> Since this is a hobby project, the macOS app is not signed with a developer ID from Apple. When opening the app, there might pop up a window saying the app is damaged and can't be opened. If you encounter this issue, then you can manually grant executable rights with the following terminal command and try again:
+> Since this is a hobby project, the macOS app is not signed with a developer ID from Apple. When opening the app, there might pop up a window saying the app is damaged and can't be opened. If you encounter this issue, then you can try to take the app out of quarantine mode or manually grant executable rights with the following terminal commands. Then try again:
+
+Disable quarantine mode for this app:
+```
+sudo xattr -cr /path/to/app/KVMapper.app
+```
+Grant executable rights, if the first command didn't work:
 ```
 sudo chmod +x /path/to/app/KVMapper.app/Contents/MacOS/KVMapper
 ```
+Alternatively you can clone this project and build the app yourself. See section [Building](#Building).
 
 ## Usage
 
@@ -62,9 +69,8 @@ button_convert: Convert
 
 ## Building
 
-- Open the project folder in IntelliJ IDEA
-- Open the Gradle tab on the right and run the task `Tasks -> compose desktop -> run` to build and launch the app
-- Open the Gradle tab on the right and run the task `Tasks -> compose desktop -> createDistributable` to build and package the app into an executable app. (e.g. macOS app)
+- Run the app: `./gradlew run` or `./gradlew runRelease`
+- Build a distributable: `./gradlew createDistributable` or `./gradlew createReleaseDistributable`
 
 > Distributable is built to: `build/compose/binaries/main/app`  
 > Building requires JDK 16: `Preferences -> Gradle -> Gradle JDK`
